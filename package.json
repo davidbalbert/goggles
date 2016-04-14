@@ -1,7 +1,7 @@
 {
   "name": "goggles",
   "version": "0.1.0",
-  "description": "A Chrome extension for the Recurse Center community",
+  "description": "An extension that points out other Recursers as you surf the web",
   "scripts": {},
   "author": "David Albert",
   "license": "GPL-3.0",

@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Recurse Center Goggles",
-  "description": "A Chrome extension for the Recurse Center community",
+  "description": "An extension that points out other Recursers as you surf the web",
   "version": "0.1.0",
 
   "browser_action": {
