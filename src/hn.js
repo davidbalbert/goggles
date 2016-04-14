@@ -1,15 +1,19 @@
 import _ from 'underscore';
 import { select, node } from './dom';
 
-const Users = [
+const USERS = [
   "ymse",
   "steveklabnik",
+  "tkinom",
+  "dogma1138",
 ];
 
-const Domains = [
+const DOMAINS = [
   "visualstudio.com",
   "graphics.latimes.com",
 ];
+
+const USER_URL = "https://news.ycombinator.com/user?";
 
 function hasChildOfType(node, childType) {
   return _.any(node.children, child => child.nodeName.toLowerCase() === childType.toLowerCase());
@@ -22,7 +26,7 @@ function getStories() {
   });
 
   const submitterNodes = _.filter(select(document, '.subtext > a'), a => {
-    return a.href.indexOf("https://news.ycombinator.com/user?") === 0;
+    return a.href.indexOf(USER_URL) === 0;
   });
 
   const stories = _.map(storyNodes, (storyNode, i) => {
@@ -41,6 +45,21 @@ function getStories() {
   return stories;
 }
 
+function getComments() {
+  const links = select(document, '.comhead > a');
+
+  const userLinks = _.filter(links, a => {
+    return a.href.indexOf(USER_URL) === 0;
+  });
+
+  return userLinks.map(a => {
+    return {
+      user: a.innerText,
+      userNode: a,
+    };
+  });
+}
+
 function annotateNode(n) {
   const logo1x = chrome.extension.getURL('images/logo12.png');
   const logo2x = chrome.extension.getURL('images/logo24.png');
@@ -50,7 +69,7 @@ function annotateNode(n) {
   n.appendChild(annotation);
 }
 
-function annotateSubmitter(story) {
+function annotateUser(story) {
   annotateNode(story.userNode);
 }
 
@@ -61,14 +80,20 @@ function annotateStory(story) {
 export function annotate() {
   const stories = getStories();
 
-  const rcStories = stories.filter(s => _.any(Domains, d => s.url.indexOf(d) !== -1));
-  const rcSubmissions = stories.filter(s => _.contains(Users, s.user));
+  const rcStories = stories.filter(s => _.any(DOMAINS, d => s.url.indexOf(d) !== -1));
+  const rcSubmissions = stories.filter(s => _.contains(USERS, s.user));
+
+  const comments = getComments().filter(c => _.contains(USERS, c.user));
 
   for (let story of rcStories) {
     annotateStory(story);
   }
 
   for (let story of rcSubmissions) {
-    annotateSubmitter(story);
+    annotateUser(story);
+  }
+
+  for (let comment of comments) {
+    annotateUser(comment);
   }
 }

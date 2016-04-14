@@ -8,4 +8,3 @@ export function node(s) {
 
   return div.firstChild;
 }
-
