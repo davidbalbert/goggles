@@ -5,4 +5,3 @@ switch (window.location.host) {
     HackerNews.annotate();
     break;
 }
-

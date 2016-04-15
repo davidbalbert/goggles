@@ -6,11 +6,19 @@ const USERS = [
   "steveklabnik",
   "tkinom",
   "dogma1138",
+  "acemarke",
+  "ajdlinux",
+  "pjmlp",
+  "cromwellian",
+  "mythz",
+  "lhorie",
 ];
 
 const DOMAINS = [
   "visualstudio.com",
   "graphics.latimes.com",
+  "robovm.com",
+  "bloomberg.com",
 ];
 
 const USER_URL = "https://news.ycombinator.com/user?";
