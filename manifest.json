@@ -17,10 +17,15 @@
     "images/*.png"
   ],
 
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  }
+
   "content_scripts": [
     {
       "matches": ["https://news.ycombinator.com/*"],
-      "js": ["goggles.js"]
+      "js": ["content.js"]
     }
   ]
 }

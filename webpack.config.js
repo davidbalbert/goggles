@@ -1,10 +1,13 @@
 var path = require('path');
 
 module.exports = {
-  entry: './src/main.js',
+  entry: {
+    content: './src/content.js',
+    background: './src/background.js',
+  },
   output: {
     path: __dirname,
-    filename: 'goggles.js'
+    filename: '[name].js'
   },
   devtool: 'inline-source-map',
   module: {
