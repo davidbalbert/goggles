@@ -1,4 +1,11 @@
+require('dotenv').config();
+
+var webpack = require('webpack');
 var path = require('path');
+
+var definePlugin = new webpack.DefinePlugin({
+  __RC_API_BASE__: JSON.stringify(process.env.RC_API_BASE || 'https://www.recurse.com'),
+});
 
 module.exports = {
   entry: {
@@ -21,5 +28,6 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [definePlugin]
 };

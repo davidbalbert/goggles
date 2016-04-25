@@ -1,6 +1,6 @@
 import { selectOne } from './dom';
 
-export const AUTH_URL = 'http://recurse.dev/goggles/auth';
+export const AUTH_URL = __RC_API_BASE__ + '/goggles/auth';
 
 const SUCCESS_MESSAGE = 'RC Goggles is authenticated! Feel free to close this tab.';
 const FAILURE_MESSAGE = `RC Goggles failed to authenticate. Please email <a href="mailto:faculty@recurse.com&quot;">faculty@recurse.com</a> or ping <strong>@Faculty</strong> on Zulip.<br>Please include any information that was printed in this tab's console.`;
