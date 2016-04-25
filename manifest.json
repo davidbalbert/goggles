@@ -20,11 +20,15 @@
   "background": {
     "persistent": false,
     "scripts": ["background.js"]
-  }
+  },
 
   "content_scripts": [
     {
-      "matches": ["https://news.ycombinator.com/*"],
+      "matches": [
+	"https://news.ycombinator.com/*",
+	"https://www.recurse.com/goggles/auth",
+	"http://recurse.dev/goggles/auth"
+      ],
       "js": ["content.js"]
     }
   ]

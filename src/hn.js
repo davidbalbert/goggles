@@ -72,6 +72,7 @@ function annotateNode(n) {
   const logo1x = chrome.extension.getURL('images/logo12.png');
   const logo2x = chrome.extension.getURL('images/logo24.png');
 
+  // the space after '<span>' is intentional
   const annotation = node(`<span> <img alt="RC logo" srcset="${logo1x}, ${logo2x} 2x" src="${logo1x}"></span>`);
 
   n.appendChild(annotation);
@@ -85,7 +86,7 @@ function annotateStory(story) {
   annotateNode(story.titleNode);
 }
 
-export function annotate() {
+function annotate() {
   const stories = getStories();
 
   const rcStories = stories.filter(s => _.any(DOMAINS, d => s.url.indexOf(d) !== -1));
@@ -105,3 +106,7 @@ export function annotate() {
     annotateUser(comment);
   }
 }
+
+export default {
+  annotate
+};

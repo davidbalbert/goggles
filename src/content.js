@@ -1,7 +1,22 @@
-import * as HackerNews from './hn'
+import RecurseCenter from './rc';
+import HackerNews from './hn';
 
-switch (window.location.host) {
-  case 'news.ycombinator.com':
-    HackerNews.annotate();
-    break;
+function annotate() {
+  switch (window.location.host) {
+    case 'news.ycombinator.com':
+      HackerNews.annotate();
+      break;
+  }
 }
+
+chrome.runtime.sendMessage({type: 'isAuthenticated'}, response => {
+  if (window.location.href === RecurseCenter.AUTH_URL && response.authenticated) {
+    // show the success message if we've already authenticated so it doesn't
+    // look like we've hung.
+    RecurseCenter.setSuccessMessage();
+  } else if (window.location.href === RecurseCenter.AUTH_URL) {
+    RecurseCenter.authenticate();
+  } else if (response.authenticated) {
+    annotate();
+  }
+});
