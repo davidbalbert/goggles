@@ -2,3 +2,4 @@ node_modules
 content.js
 background.js
 .env
+*.log
