@@ -13,4 +13,4 @@ $ npm install
 $ npm run watch
 ```
 
-Go to <a href="chrome://extensions">chrome://extensions</a> and load Goggles with the "Load unpacked extension..." button.
+Go to chrome://extensions and load Goggles with the "Load unpacked extension..." button.
