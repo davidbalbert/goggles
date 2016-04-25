@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import { select, node } from './dom';
+import RecurseCenter from './rc';
 
 const USERS = [
   "ymse",
@@ -89,22 +90,30 @@ function annotateStory(story) {
 function annotate() {
   const stories = getStories();
 
-  const rcStories = stories.filter(s => _.any(DOMAINS, d => s.url.indexOf(d) !== -1));
-  const rcSubmissions = stories.filter(s => _.contains(USERS, s.user));
+  Promise.all(
+    RecurseCenter.queryAndFilter(stories, {key: 'url', param: 'url'}),
+    RecurseCenter.queryAndFilter(stories, {key: 'user', param: 'hacker_news'})
+  ).then(results => {
+    const [rcStories, rcSubmissions] = results;
 
-  const comments = getComments().filter(c => _.contains(USERS, c.user));
+    //const comments = getComments().filter(c => _.contains(USERS, c.user));
 
-  for (let story of rcStories) {
-    annotateStory(story);
-  }
+    for (let story of rcStories) {
+      annotateStory(story);
+    }
 
-  for (let story of rcSubmissions) {
-    annotateUser(story);
-  }
+    for (let story of rcSubmissions) {
+      annotateUser(story);
+    }
 
-  for (let comment of comments) {
-    annotateUser(comment);
-  }
+    /*
+    for (let comment of comments) {
+      annotateUser(comment);
+    }
+    */
+  }).catch(error => {
+    console.error(error);
+  });
 }
 
 export default {
