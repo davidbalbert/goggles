@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "Recurse Center Goggles",
+  "name": "RC Goggles",
   "description": "An extension that points out other Recursers as you surf the web",
   "version": "0.1.0",
 
