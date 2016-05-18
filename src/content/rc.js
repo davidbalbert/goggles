@@ -25,7 +25,7 @@ function saveCredentials(response) {
   );
 }
 
-function authenticate() {
+async function authenticate() {
   const csrfParamName = selectOne(document, 'meta[name=csrf-param]').attributes.content.value;
   const csrfToken = selectOne(document, 'meta[name=csrf-token]').attributes.content.value;
 
@@ -40,22 +40,21 @@ function authenticate() {
     },
   };
 
-  fetch(AUTH_URL, {
+  const response = await fetch(AUTH_URL, {
     method: 'POST',
     headers,
     body: JSON.stringify(data),
     credentials: 'include',
-  }).then(response => {
-    if (response.ok) {
-      response.json().then(respData => {
-	saveCredentials(respData).then(() => {
-	  setMessage(SUCCESS_MESSAGE);
-	});
-      });
-    } else {
-      setMessage(FAILURE_MESSAGE);
-    }
   });
+
+  if (!response.ok) {
+    setMessage(FAILURE_MESSAGE);
+    return;
+  }
+
+  const responseData = await response.json();
+  await saveCredentials(responseData);
+  setMessage(SUCCESS_MESSAGE);
 }
 
 function getAccessToken() {
