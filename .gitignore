@@ -1,3 +1,5 @@
 node_modules
 .env
+background.js
+content.js
 *.log
