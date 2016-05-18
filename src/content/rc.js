@@ -1,7 +1,8 @@
 import _ from 'underscore';
+import Storage from '../shared/storage';
+import { AUTH_URL } from '../shared/constants';
 import { selectOne } from './dom';
 
-export const AUTH_URL = __RC_API_BASE__ + '/goggles/auth';
 const QUERY_URL = __RC_API_BASE__ + '/api/goggles/query';
 
 const SUCCESS_MESSAGE = 'RC Goggles is authenticated! Feel free to close this tab.';
@@ -13,6 +14,15 @@ function setMessage(msg) {
 
 function setSuccessMessage() {
   setMessage(SUCCESS_MESSAGE);
+}
+
+function saveCredentials(response) {
+  return Storage.set(
+    {
+      accessToken: response.token.token,
+      user: response.user
+    }
+  );
 }
 
 function authenticate() {
@@ -38,12 +48,9 @@ function authenticate() {
   }).then(response => {
     if (response.ok) {
       response.json().then(respData => {
-	chrome.runtime.sendMessage({
-	  type: 'authComplete',
-	  data: respData,
+	saveCredentials(respData).then(() => {
+	  setMessage(SUCCESS_MESSAGE);
 	});
-
-	setMessage(SUCCESS_MESSAGE);
       });
     } else {
       setMessage(FAILURE_MESSAGE);
@@ -118,7 +125,6 @@ function queryAndFilter(things, options) {
 }
 
 export default {
-  AUTH_URL,
   authenticate,
   setSuccessMessage,
   query,
