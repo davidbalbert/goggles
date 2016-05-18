@@ -2,26 +2,6 @@ import _ from 'underscore';
 import { select, node } from './dom';
 import RecurseCenter from './rc';
 
-const USERS = [
-  "ymse",
-  "steveklabnik",
-  "tkinom",
-  "dogma1138",
-  "acemarke",
-  "ajdlinux",
-  "pjmlp",
-  "cromwellian",
-  "mythz",
-  "lhorie",
-];
-
-const DOMAINS = [
-  "visualstudio.com",
-  "graphics.latimes.com",
-  "robovm.com",
-  "bloomberg.com",
-];
-
 const USER_URL = "https://news.ycombinator.com/user?";
 
 function hasChildOfType(node, childType) {
@@ -87,33 +67,30 @@ function annotateStory(story) {
   annotateNode(story.titleNode);
 }
 
-function annotate() {
+async function annotate() {
   const stories = getStories();
+  const comments = getComments();
 
-  Promise.all(
-    RecurseCenter.queryAndFilter(stories, {key: 'url', param: 'url'}),
-    RecurseCenter.queryAndFilter(stories, {key: 'user', param: 'hacker_news'})
-  ).then(results => {
-    const [rcStories, rcSubmissions] = results;
+  const [rcStories, rcSubmissions, rcComments] = await Promise.all(
+    [
+      RecurseCenter.queryAndFilter(stories, {key: 'url', param: 'url'}),
+      RecurseCenter.queryAndFilter(stories, {key: 'user', param: 'hacker_news'}),
+      RecurseCenter.queryAndFilter(comments, {key: 'user', param: 'hacker_news'}),
+    ]
+  );
 
-    //const comments = getComments().filter(c => _.contains(USERS, c.user));
 
-    for (let story of rcStories) {
-      annotateStory(story);
-    }
+  for (let story of rcStories) {
+    annotateStory(story);
+  }
 
-    for (let story of rcSubmissions) {
-      annotateUser(story);
-    }
+  for (let story of rcSubmissions) {
+    annotateUser(story);
+  }
 
-    /*
-    for (let comment of comments) {
-      annotateUser(comment);
-    }
-    */
-  }).catch(error => {
-    console.error(error);
-  });
+  for (let comment of rcComments) {
+    annotateUser(comment);
+  }
 }
 
 export default {

@@ -9,6 +9,7 @@ function fileExists(path) {
   }
 }
 
+// dotenv throws an error if the file doesn't exist
 if (fileExists(".env")) {
   require('dotenv').config();
 }

@@ -3,8 +3,6 @@ import Storage from '../shared/storage';
 import { AUTH_URL } from '../shared/constants';
 import { selectOne } from './dom';
 
-const QUERY_URL = __RC_API_BASE__ + '/api/goggles/query';
-
 const SUCCESS_MESSAGE = 'RC Goggles is authenticated! Feel free to close this tab.';
 const FAILURE_MESSAGE = `RC Goggles failed to authenticate. Please email <a href="mailto:faculty@recurse.com&quot;">faculty@recurse.com</a> or ping <strong>@Faculty</strong> on Zulip.<br>Please include any information that was printed in this tab's console.`;
 
@@ -57,56 +55,16 @@ async function authenticate() {
   setMessage(SUCCESS_MESSAGE);
 }
 
-function getAccessToken() {
+function sendMessage(message) {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({type: 'getAccessToken'}, response => {
-      const { accessToken } = response;
-
-      resolve(accessToken);
+    chrome.runtime.sendMessage(message, response => {
+      resolve(response);
     });
   });
 }
 
-function makeQuery(things, key, param) {
-  return accessToken => {
-    const headers = new Headers();
-    headers.append('Accept', 'application/json');
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', `Bearer ${accessToken}`);
-
-    const data = {
-      [param]: things.map(thing => thing[key]),
-    }
-
-    return fetch(QUERY_URL, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data),
-    });
-  };
-}
-
-function formatResponse(things, param) {
-  return response => {
-    if (response.ok) {
-      return response.json().then(data => {
-	const zipped = things.zip(data[param]);
-
-	return zipped.map(([thing, isRC]) => {
-	  return {
-	    ...thing,
-	    isRC
-	  };
-	});
-      });
-    } else {
-      return Promise.reject('Error while querying RC API');
-    }
-  };
-}
-
 // Queries the RC API
-function query(things, options) {
+async function query(things, options) {
   if (!_.has(options, 'key')) {
     throw "missing key";
   } else if (!_.has(options, 'param')) {
@@ -116,11 +74,33 @@ function query(things, options) {
   const key = options.key;
   const param = options.param;
 
-  return getAccessToken().then(makeQuery(things, key, param)).then(formatResponse(things, param));
+  const message = {
+    type: 'query',
+    things,
+    key,
+    param,
+  }
+
+  const response = await sendMessage(message);
+
+  if (response.error) {
+    console.error(response.error);
+    return;
+  }
+
+  const zipped = _.zip(things, response.results[param]);
+
+  return zipped.map(([thing, isRC]) => {
+    return {
+      ...thing,
+      isRC
+    };
+  });
 }
 
-function queryAndFilter(things, options) {
-  return query(things, options).then(queriedThings => _.filter(queriedThings, 'isRC'));
+async function queryAndFilter(things, options) {
+  let results = await query(things, options);
+  return _.filter(results, 'isRC');
 }
 
 export default {

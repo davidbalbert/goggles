@@ -13,16 +13,18 @@ function annotate() {
 }
 
 async function isAuthenticated() {
-  let {token} = await Storage.get('accessToken');
+  let {accessToken} = await Storage.get('accessToken');
 
-  if (token) {
+  if (accessToken) {
     return true;
   } else {
     return false;
   }
 }
 
-isAuthenticated().then(authenticated => {
+async function init() {
+  let authenticated = await isAuthenticated();
+
   if (window.location.href === AUTH_URL && authenticated) {
     // show the success message if we've already authenticated so it doesn't
     // look like we've hung.
@@ -32,4 +34,6 @@ isAuthenticated().then(authenticated => {
   } else if (authenticated) {
     annotate();
   }
-});
+}
+
+init();
