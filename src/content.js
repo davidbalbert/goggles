@@ -1,5 +1,5 @@
-import RecurseCenter from './rc';
-import HackerNews from './hn';
+import RecurseCenter from './content/rc';
+import HackerNews from './content/hn';
 
 function annotate() {
   switch (window.location.host) {

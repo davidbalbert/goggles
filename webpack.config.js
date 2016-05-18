@@ -1,4 +1,17 @@
-require('dotenv').config();
+var fs = require('fs');
+
+function fileExists(path) {
+  try {
+    fs.accessSync(path, fs.F_OK);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+if (fileExists(".env")) {
+  require('dotenv').config();
+}
 
 var webpack = require('webpack');
 var path = require('path');
