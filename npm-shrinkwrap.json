@@ -2364,11 +2364,6 @@
         }
       }
     },
-    "jquery": {
-      "version": "2.2.3",
-      "from": "jquery@latest",
-      "resolved": "https://registry.npmjs.org/jquery/-/jquery-2.2.3.tgz"
-    },
     "js-tokens": {
       "version": "1.0.3",
       "from": "js-tokens@>=1.0.1 <2.0.0",
