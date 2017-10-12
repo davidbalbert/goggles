@@ -31,3 +31,9 @@ Because this is a browser extension, all dependencies are dev dependencies. To i
 $ npm install underscore --save-dev
 $ npm shrinkwrap --dev
 ```
+
+## License
+
+Copyright 2017 the Recurse Center.
+
+This software is licensed under the terms of the GPL Version 3 or later. See COPYING.md for more details.
